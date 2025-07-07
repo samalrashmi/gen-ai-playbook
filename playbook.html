@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Gen AI Playbook for the Insurance Sector</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Calm Harmony -->
+    <!-- Application Structure Plan: The application uses a thematic, single-page dashboard structure instead of mirroring the report's linear chapters. This design choice enhances usability by allowing different user personas (executives, developers, product managers) to quickly navigate to sections relevant to their roles via a sticky header. The flow is designed for discovery: starting with high-level concepts, moving to practical applications in the insurance value chain, then detailing implementation strategy, ROI, risks, and a final case study. This non-linear, role-based navigation is superior to a simple document as it accommodates varied user goals and levels of existing knowledge. -->
+    <!-- Visualization & Content Choices: The report's content is transformed into interactive components. Goal: Inform -> Viz: Interactive nested diagrams for AI/ML/DL hierarchy (HTML/CSS/JS) to make abstract concepts tangible. Goal: Compare -> Viz: Bar charts (Chart.js) for use case KPIs to provide quick quantitative insights. Goal: Organize -> Viz: Interactive matrix for the AI Maturity Model and a clickable step-by-step flowchart for the implementation roadmap (HTML/CSS/JS), guiding users through complex frameworks. Goal: Engage -> Viz: An interactive ROI calculator (JS) to turn theoretical benefits into a practical tool. All choices prioritize user interaction and comprehension over static text, adhering to the NO SVG/Mermaid constraint. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .nav-link { transition: color 0.3s, border-color 0.3s; }
+        .nav-link.active { color: #2563EB; border-bottom-color: #2563EB; }
+        .nav-link:not(.active) { border-bottom-color: transparent; }
+        .card { transition: transform 0.3s, box-shadow 0.3s; }
+        .card:hover { transform: translateY(-5px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); }
+        .chart-container { position: relative; width: 100%; max-width: 800px; margin-left: auto; margin-right: auto; height: 400px; max-height: 50vh; }
+        .tab.active { background-color: #3B82F6; color: white; }
+        .tab { background-color: #E5E7EB; color: #1F2937; }
+        .maturity-cell.active { background-color: #D1FAE5; border-color: #10B981; }
+        .roadmap-step.active { border-color: #3B82F6; background-color: #EFF6FF; }
+        [x-cloak] { display: none !important; }
+        .value-chain-item { cursor: pointer; transition: all 0.3s ease; }
+        .value-chain-item.active { background-color: #3B82F6; color: white; transform: scale(1.05); }
+        .value-chain-item:not(.active) { background-color: #F3F4F6; }
+    </style>
+</head>
+<body class="bg-stone-100 text-gray-800 antialiased">
+
+    <header id="header" class="bg-white/80 backdrop-blur-md sticky top-0 z-50 shadow-sm">
+        <nav class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center">
+                    <span class="font-bold text-xl text-blue-600">Gen AI Playbook</span>
+                </div>
+                <div class="hidden md:flex items-center space-x-4">
+                    <a href="#welcome" class="nav-link text-gray-600 hover:text-blue-600 font-medium pb-1 border-b-2">Welcome</a>
+                    <a href="#concepts" class="nav-link text-gray-600 hover:text-blue-600 font-medium pb-1 border-b-2">Core Concepts</a>
+                    <a href="#value-chain" class="nav-link text-gray-600 hover:text-blue-600 font-medium pb-1 border-b-2">Value Chain</a>
+                    <a href="#implementation" class="nav-link text-gray-600 hover:text-blue-600 font-medium pb-1 border-b-2">Implementation</a>
+                    <a href="#roi" class="nav-link text-gray-600 hover:text-blue-600 font-medium pb-1 border-b-2">ROI</a>
+                    <a href="#risks" class="nav-link text-gray-600 hover:text-blue-600 font-medium pb-1 border-b-2">Risks</a>
+                    <a href="#case-study" class="nav-link text-gray-600 hover:text-blue-600 font-medium pb-1 border-b-2">Case Study</a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+        
+        <section id="welcome" class="text-center mb-16 scroll-mt-20">
+            <h1 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4">The Interactive Gen AI Playbook for Insurance</h1>
+            <p class="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto mb-8">This application translates the comprehensive 'Gen AI Fundamentals' report into an interactive experience. Explore core concepts, discover high-impact use cases, and learn how to implement, measure, and govern Gen AI to drive transformative value in your organization.</p>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+                <div class="bg-white p-6 rounded-lg shadow-md card">
+                    <p class="text-4xl font-bold text-blue-600" id="stat-value-potential">40%</p>
+                    <p class="text-gray-600 mt-2">Potential Value from Gen AI vs. Traditional AI</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md card">
+                    <p class="text-4xl font-bold text-blue-600" id="stat-claims-reduction">94%</p>
+                    <p class="text-gray-600 mt-2">Claim Processing Time Reduction Reported</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md card">
+                    <p class="text-4xl font-bold text-blue-600" id="stat-aig-productivity">5x</p>
+                    <p class="text-gray-600 mt-2">AIG's Goal for Underwriter Productivity Boost</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="concepts" class="mb-16 scroll-mt-20">
+            <h2 class="text-3xl font-bold text-center mb-2">Core Concepts</h2>
+            <p class="text-lg text-gray-600 text-center max-w-3xl mx-auto mb-10">Generative AI is part of a broader technology landscape. This section demystifies the key terms—AI, Machine Learning, and Deep Learning—and the essential components that power today's intelligent systems, providing the foundational knowledge needed to engage in strategic discussions.</p>
+            
+            <div class="bg-white p-8 rounded-lg shadow-lg">
+                <h3 class="text-2xl font-semibold mb-6 text-center">The Hierarchy of Artificial Intelligence</h3>
+                <div class="relative flex justify-center items-center h-80 cursor-pointer" id="ai-hierarchy-viz">
+                    <div id="ai-circle" class="absolute bg-blue-100 rounded-full w-80 h-80 flex items-center justify-center text-blue-800 font-bold text-xl transition-all duration-300">Artificial Intelligence</div>
+                    <div id="ml-circle" class="absolute bg-blue-200 rounded-full w-56 h-56 flex items-center justify-center text-blue-800 font-bold text-lg transition-all duration-300">Machine Learning</div>
+                    <div id="dl-circle" class="absolute bg-blue-300 rounded-full w-32 h-32 flex items-center justify-center text-blue-900 font-bold text-base text-center transition-all duration-300">Deep Learning</div>
+                </div>
+                <div id="hierarchy-explanation" class="mt-6 text-center p-4 bg-gray-50 rounded-md min-h-[100px]">
+                    <h4 class="font-bold text-lg text-gray-800">Click a circle to learn more.</h4>
+                    <p class="text-gray-600">This interactive diagram shows how these concepts relate. Each is a subset of the one before it.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="value-chain" class="mb-16 scroll-mt-20">
+            <h2 class="text-3xl font-bold text-center mb-2">Transforming the Insurance Value Chain</h2>
+            <p class="text-lg text-gray-600 text-center max-w-3xl mx-auto mb-10">Generative AI delivers tangible value by addressing key challenges across the insurance lifecycle. From quoting a policy to settling a claim, AI assistants can dramatically improve efficiency, accuracy, and customer satisfaction. Explore the specific use cases and their measured impact below.</p>
+            
+            <div class="bg-white p-8 rounded-lg shadow-lg">
+                <div class="flex flex-wrap justify-center gap-2 md:gap-4 mb-8" id="value-chain-tabs">
+                    <button data-filter="All" class="value-chain-item py-2 px-4 rounded-full font-semibold active">All Functions</button>
+                    <button data-filter="Underwriting" class="value-chain-item py-2 px-4 rounded-full font-semibold">Underwriting</button>
+                    <button data-filter="Claims" class="value-chain-item py-2 px-4 rounded-full font-semibold">Claims</button>
+                    <button data-filter="Fraud Detection" class="value-chain-item py-2 px-4 rounded-full font-semibold">Fraud Detection</button>
+                    <button data-filter="Customer Service" class="value-chain-item py-2 px-4 rounded-full font-semibold">Customer Service</button>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="value-chain-cards">
+                </div>
+            </div>
+        </section>
+        
+        <section id="implementation" class="mb-16 scroll-mt-20">
+            <h2 class="text-3xl font-bold text-center mb-2">Your Implementation Playbook</h2>
+            <p class="text-lg text-gray-600 text-center max-w-3xl mx-auto mb-10">Adopting Gen AI is a strategic journey, not just a technology project. This section provides two key frameworks to guide your organization: an AI Maturity Model to assess your current state and a practical, 8-step roadmap to move from initial concept to a scaled, value-driving reality.</p>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div class="bg-white p-8 rounded-lg shadow-lg">
+                    <h3 class="text-2xl font-semibold mb-6 text-center">Insurance AI Maturity Model</h3>
+                    <div class="grid grid-cols-4 gap-2 text-center">
+                        <div></div>
+                        <div class="font-bold p-2">Stage 1: Exploratory</div>
+                        <div class="font-bold p-2">Stage 2: Evolving</div>
+                        <div class="font-bold p-2">Stage 3: Mature</div>
+                    </div>
+                    <div class="grid grid-cols-4 gap-2 text-center text-sm" id="maturity-grid">
+                    </div>
+                    <div id="maturity-details" class="mt-4 p-4 bg-gray-50 rounded-md min-h-[120px]">
+                        <h4 class="font-bold text-gray-800">Click a cell for details.</h4>
+                        <p class="text-gray-600">Understand your organization's current state across key dimensions to plot your path forward.</p>
+                    </div>
+                </div>
+
+                <div class="bg-white p-8 rounded-lg shadow-lg">
+                    <h3 class="text-2xl font-semibold mb-6 text-center">Implementation Roadmap</h3>
+                    <div id="roadmap-steps" class="space-y-3">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="roi" class="mb-16 scroll-mt-20">
+            <h2 class="text-3xl font-bold text-center mb-2">Measuring the Return on Investment</h2>
+            <p class="text-lg text-gray-600 text-center max-w-3xl mx-auto mb-10">Building a business case for Gen AI requires a clear understanding of both costs and benefits. This interactive tool helps you explore the potential ROI for a Gen AI initiative by balancing tangible financial gains with the total cost of ownership.</p>
+
+            <div class="bg-white p-8 rounded-lg shadow-lg">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+                    <div>
+                        <h3 class="text-2xl font-semibold mb-4">Interactive ROI Calculator</h3>
+                        <div class="space-y-4">
+                            <div>
+                                <label for="costs" class="block text-sm font-medium text-gray-700">Total Investment Cost ($)</label>
+                                <input type="number" id="costs" value="500000" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm">
+                            </div>
+                            <div>
+                                <label for="benefits" class="block text-sm font-medium text-gray-700">Annual Net Benefits ($)</label>
+                                <input type="number" id="benefits" value="200000" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm">
+                            </div>
+                             <button id="calculate-roi" class="w-full bg-blue-600 text-white font-bold py-2 px-4 rounded-md hover:bg-blue-700 transition">Calculate ROI</button>
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <div class="bg-blue-50 p-6 rounded-lg">
+                            <p class="text-gray-600 text-lg">Calculated ROI</p>
+                            <p id="roi-result" class="text-5xl font-bold text-blue-600 my-2">40%</p>
+                            <p class="text-gray-600 text-lg">Payback Period</p>
+                            <p id="payback-result" class="text-3xl font-bold text-blue-600 my-2">2.5 Years</p>
+                        </div>
+                        <div class="chart-container h-64 mt-6">
+                            <canvas id="benefits-chart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="risks" class="mb-16 scroll-mt-20">
+            <h2 class="text-3xl font-bold text-center mb-2">Navigating Risks & Governance</h2>
+            <p class="text-lg text-gray-600 text-center max-w-3xl mx-auto mb-10">Deploying Gen AI responsibly is non-negotiable. This requires a proactive approach to managing risks like data privacy, model bias, and factual inaccuracies ("hallucinations"). This framework helps you assess and mitigate the key risks associated with AI adoption.</p>
+            <div class="bg-white p-8 rounded-lg shadow-lg">
+                <h3 class="text-2xl font-semibold mb-6 text-center">Gen AI Risk Assessment Matrix</h3>
+                 <div id="risk-matrix-container" class="relative">
+                    <div class="grid grid-cols-5 grid-rows-5 gap-1">
+                        <div class="row-start-1 col-start-1"></div>
+                        <div class="col-span-4 flex justify-around text-center font-bold text-sm">
+                            <div>Low</div>
+                            <div>Medium</div>
+                            <div>High</div>
+                            <div>Critical</div>
+                        </div>
+                        <div class="row-span-4 flex flex-col justify-around text-center font-bold text-sm -rotate-90 transform -translate-x-1/3 w-24">
+                            <div>Low</div>
+                            <div>Medium</div>
+                            <div>High</div>
+                            <div>Critical</div>
+                        </div>
+                        <div id="risk-matrix-grid" class="col-start-2 col-span-4 row-start-2 row-span-4 grid grid-cols-4 grid-rows-4 gap-1 border border-gray-300 bg-gray-100">
+                        </div>
+                    </div>
+                    <div id="risk-tooltip" class="hidden absolute bg-black text-white p-3 rounded-lg text-sm shadow-xl z-10 w-64"></div>
+                </div>
+            </div>
+        </section>
+
+        <section id="case-study" class="scroll-mt-20">
+            <h2 class="text-3xl font-bold text-center mb-2">Case Study: AIG's Strategic Bet on Gen AI</h2>
+            <p class="text-lg text-gray-600 text-center max-w-3xl mx-auto mb-10">To see these concepts in action, we analyze AIG's ambitious initiative to "turbocharge" their underwriters. Their strategy, partnerships, and measurable results provide a powerful, real-world example of how to successfully deploy Gen AI for core business transformation and growth.</p>
+            <div class="bg-white p-8 rounded-lg shadow-lg">
+                 <h3 class="text-2xl font-semibold mb-6 text-center">AIG Underwriter Assistance: The Impact</h3>
+                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 text-center">
+                    <div class="bg-gray-50 p-6 rounded-lg">
+                        <p class="text-gray-600">Data Quality</p>
+                        <p class="text-4xl font-bold text-green-600" id="aig-stat-quality">90%+</p>
+                        <p class="text-sm text-gray-500">Up from ~75%</p>
+                    </div>
+                    <div class="bg-gray-50 p-6 rounded-lg">
+                        <p class="text-gray-600">Processing Time</p>
+                        <p class="text-4xl font-bold text-green-600" id="aig-stat-time">&lt;1 Day</p>
+                        <p class="text-sm text-gray-500">Down from 3-4 Weeks</p>
+                    </div>
+                    <div class="bg-gray-50 p-6 rounded-lg">
+                        <p class="text-gray-600">Submission Review</p>
+                        <p class="text-4xl font-bold text-green-600" id="aig-stat-review">100%</p>
+                        <p class="text-sm text-gray-500">All incoming reviewed</p>
+                    </div>
+                    <div class="bg-gray-50 p-6 rounded-lg">
+                        <p class="text-gray-600">Quote-to-Bind Ratio</p>
+                        <p class="text-4xl font-bold text-green-600" id="aig-stat-bind">20%</p>
+                        <p class="text-sm text-gray-500">Up from 15%</p>
+                    </div>
+                 </div>
+                 <h3 class="text-2xl font-semibold my-8 text-center">Conceptual Ecosystem Architecture</h3>
+                 <div class="border-2 border-dashed border-gray-300 rounded-lg p-6">
+                    <div class="flex flex-col md:flex-row items-center justify-between gap-4 text-center">
+                        <div class="w-full md:w-1/4">
+                            <div class="font-bold text-blue-600">Inputs</div>
+                            <div class="mt-2 space-y-2 text-sm">
+                               <div class="bg-blue-50 p-2 rounded">Broker Emails</div>
+                               <div class="bg-blue-50 p-2 rounded">ACORD Forms</div>
+                               <div class="bg-blue-50 p-2 rounded">Loss Run Reports</div>
+                            </div>
+                        </div>
+                        <div class="text-gray-400 font-bold text-2xl">&rarr;</div>
+                        <div class="w-full md:w-1/2 bg-gray-100 p-4 rounded-lg">
+                            <div class="font-bold text-gray-700">Agentic AI Platform</div>
+                            <div class="text-sm mt-2">Data Ingestion & Orchestration</div>
+                            <div class="my-2 border-t border-gray-300"></div>
+                             <div class="font-semibold text-purple-700">AI Agents (Powered by LLM)</div>
+                             <div class="text-xs mt-1">Extraction | Enrichment | Analysis</div>
+                            <div class="my-2 border-t border-gray-300"></div>
+                            <div class="font-semibold text-gray-700">Proprietary Data Ontology</div>
+                        </div>
+                        <div class="text-gray-400 font-bold text-2xl">&rarr;</div>
+                         <div class="w-full md:w-1/4">
+                            <div class="font-bold text-green-600">Outputs</div>
+                            <div class="mt-2 space-y-2 text-sm">
+                               <div class="bg-green-50 p-2 rounded">Unified Underwriter Workbench</div>
+                               <div class="bg-green-50 p-2 rounded">Structured Summaries</div>
+                               <div class="bg-green-50 p-2 rounded">Preliminary Risk Scores</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-center mt-4 text-purple-700 font-bold flex items-center justify-center gap-2">
+                        <span>&larr;</span>
+                        <span>Human-in-the-Loop Feedback & Continuous Fine-Tuning</span>
+                         <span>&rarr;</span>
+                    </div>
+                 </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            
+            const valueChainData = [
+                { func: 'Underwriting', title: 'Automated Risk Assessment', challenge: 'Manual review of lengthy submission documents is slow and error-prone.', solution: 'Gen AI ingests entire submission packages (PDFs, emails) to extract, summarize, and flag key risk factors in real-time.', impact: 'Underwriting timeline slashed from weeks to less than a day.', kpi: 'Turnaround Time Reduction' },
+                { func: 'Claims', title: 'Automated Claims Processing', challenge: 'Claims processing is often manual, leading to delays and high operational costs.', solution: 'AI classifies documents, extracts data from FNOL, and performs initial damage assessment from photos.', impact: 'Reduced average claim processing from 3 weeks to just 2 minutes.', kpi: 'Processing Time Reduction' },
+                { func: 'Fraud Detection', title: 'Proactive Fraud Defense', challenge: 'Fraudsters constantly evolve tactics, making reactive detection insufficient.', solution: 'Gen AI simulates realistic, novel fraud scenarios to stress-test and harden detection models against emerging threats.', impact: '93% accuracy reported in detecting suspicious inconsistencies.', kpi: 'Detection Accuracy' },
+                { func: 'Customer Service', title: 'Personalized Customer Experience', challenge: 'Customers expect seamless, personalized, and empathetic 24/7 service.', solution: 'AI-powered "smart assistants" explain complex policy language, and sentiment analysis triggers proactive human outreach.', impact: 'Early adopters report 14% higher customer retention rates.', kpi: 'Retention Rate Increase' },
+                { func: 'Claims', title: 'Liability Assessment', challenge: 'Assessing liability in complex claims requires synthesizing multiple, disparate data sources.', solution: 'AI synthesizes incident descriptions, police reports, and witness statements to generate a first-pass liability assessment.', impact: 'Up to 30% increase in subrogation referral acceptance.', kpi: 'Subrogation Uplift' },
+                { func: 'Underwriting', title: 'Underwriter Co-pilot', challenge: 'Underwriters spend too much time on low-value data gathering vs. high-value risk analysis.', solution: 'AI provides a pre-digested, comprehensive overview, shifting the underwriter\'s role from "document reader" to "decision-maker".', impact: 'Empowers underwriters to focus on strategic risk analysis, increasing throughput.', kpi: 'Productivity Gain' },
+            ];
+
+            const maturityData = {
+                'Strategy': ['No clear AI strategy.', 'Pilots run for discrete use cases.', 'Enterprise-wide AI strategy aligned to business goals.'],
+                'Data': ['Data is siloed and inconsistent.', 'Data quality and governance being addressed.', 'Robust data governance and culture established.'],
+                'Tech': ['Legacy systems, no AI infrastructure.', 'Experimenting with AI platforms.', 'AI solutions running in production.'],
+                'Talent': ['Limited AI skills.', 'Nascent, cross-functional team forming.', 'Dedicated AI/MLOps teams, focus on upskilling.'],
+                'Governance': ['No AI governance.', 'Ad-hoc governance for pilots.', 'Formal AI governance framework in place.']
+            };
+
+            const roadmapData = [
+                { title: 'Define Clear Objectives', detail: 'Align every AI initiative with a specific, measurable business outcome.' },
+                { title: 'Assess Data Preparedness', detail: 'Audit, clean, label, and structure data relevant to the chosen use case.' },
+                { title: 'Assemble a Cross-Functional Team', detail: 'Include business, IT, legal, compliance, and risk from day one.' },
+                { title: 'Choose the Right Technology Stack', detail: 'Make strategic "build vs. buy vs. partner" decisions.' },
+                { title: 'Run a Controlled Pilot', detail: 'Test on a single, high-impact use case to prove value and learn.' },
+                { title: 'Embed Governance and Compliance', detail: 'Design responsible AI principles (fairness, transparency) from the outset.' },
+                { title: 'Invest in Change Management', detail: 'Upskill the workforce and communicate clearly how roles will evolve.' },
+                { title: 'Scale Strategically', detail: 'Use pilot success to drive end-to-end transformation of entire business domains.' },
+            ];
+
+            const riskData = [
+                { name: 'Hallucinations', likelihood: 2, impact: 2, mitigation: 'Factually inaccurate but plausible outputs. Mitigate with Human-in-the-Loop validation for all high-stakes decisions and retrieval-augmented generation (RAG) to ground answers in facts.' },
+                { name: 'Data Privacy Leak', likelihood: 1, impact: 3, mitigation: 'Exposure of PII/PHI. Mitigate with strict data anonymization, secure, encrypted data pipelines, and vendor due diligence to ensure your data is not used for training general models.' },
+                { name: 'Model Bias', likelihood: 2, impact: 3, mitigation: 'Amplifying historical biases from data. Mitigate with regular bias audits, representative training data, fairness-aware ML techniques, and transparency in decision-making.' },
+                { name: 'IP Infringement', likelihood: 1, impact: 1, mitigation: 'Using copyrighted data for training. Mitigate with clear policies on data provenance and a preference for models from reputable vendors with strong data governance.' },
+                { name: 'Explainability', likelihood: 3, impact: 2, mitigation: '"Black box" nature of models. Mitigate by prioritizing partners offering transparency tools and maintaining detailed logs of model inputs and outputs for auditing purposes.' }
+            ];
+
+            function animateCounter(element, finalValue, isPercent = false) {
+                let start = 0;
+                const duration = 2000;
+                const stepTime = Math.abs(Math.floor(duration / finalValue));
+                let current = start;
+                const timer = setInterval(() => {
+                    current += 1;
+                    element.innerHTML = isPercent ? `${current}%` : current;
+                    if (current === finalValue) {
+                        clearInterval(timer);
+                    }
+                }, stepTime);
+            }
+            
+            function animateStatCounters() {
+                const statPotential = document.getElementById('stat-value-potential');
+                statPotential.innerHTML = `20%<span class="text-base"> to </span>40%`;
+                
+                const statClaims = document.getElementById('stat-claims-reduction');
+                statClaims.innerHTML = `~94%`;
+
+                const aigQuality = document.getElementById('aig-stat-quality');
+                aigQuality.innerHTML = `>90%`;
+                const aigTime = document.getElementById('aig-stat-time');
+                aigTime.innerHTML = `<1 Day`;
+                const aigReview = document.getElementById('aig-stat-review');
+                aigReview.innerHTML = `100%`;
+                const aigBind = document.getElementById('aig-stat-bind');
+                aigBind.innerHTML = `20%`;
+            }
+            
+            function initAIHierarchy() {
+                const viz = document.getElementById('ai-hierarchy-viz');
+                const explanation = document.getElementById('hierarchy-explanation');
+                const aiCircle = document.getElementById('ai-circle');
+                const mlCircle = document.getElementById('ml-circle');
+                const dlCircle = document.getElementById('dl-circle');
+
+                const explanations = {
+                    'ai-circle': { title: 'Artificial Intelligence (AI)', text: 'The broadest field, aiming to create systems that simulate any aspect of human intelligence, from rule-based logic to learning.' },
+                    'ml-circle': { title: 'Machine Learning (ML)', text: 'A subset of AI where systems learn from data to identify patterns and make predictions without being explicitly programmed.' },
+                    'dl-circle': { title: 'Deep Learning (DL)', text: 'A specialized subset of ML that uses multi-layered "deep" neural networks to learn intricate patterns from massive datasets. It powers most modern Gen AI.' }
+                };
+
+                viz.addEventListener('click', (e) => {
+                    const targetId = e.target.id;
+                    if (explanations[targetId]) {
+                        explanation.innerHTML = `<h4 class="font-bold text-lg text-gray-800">${explanations[targetId].title}</h4><p class="text-gray-600 mt-1">${explanations[targetId].text}</p>`;
+                        [aiCircle, mlCircle, dlCircle].forEach(c => c.style.transform = 'scale(1)');
+                        e.target.style.transform = 'scale(1.1)';
+                    }
+                });
+            }
+
+            function renderValueChainCards(filter = 'All') {
+                const container = document.getElementById('value-chain-cards');
+                container.innerHTML = '';
+                const filteredData = filter === 'All' ? valueChainData : valueChainData.filter(item => item.func === filter);
+                
+                filteredData.forEach(item => {
+                    const card = document.createElement('div');
+                    card.className = 'bg-gray-50 p-6 rounded-lg border border-gray-200 card';
+                    card.innerHTML = `
+                        <span class="inline-block bg-${item.func === 'Underwriting' ? 'blue' : item.func === 'Claims' ? 'green' : item.func === 'Fraud Detection' ? 'red' : 'purple'}-100 text-${item.func === 'Underwriting' ? 'blue' : item.func === 'Claims' ? 'green' : item.func === 'Fraud Detection' ? 'red' : 'purple'}-800 text-xs font-medium px-2.5 py-0.5 rounded-full mb-2">${item.func}</span>
+                        <h4 class="text-xl font-semibold mb-2">${item.title}</h4>
+                        <p class="text-gray-600 mb-1"><strong class="text-gray-800">Challenge:</strong> ${item.challenge}</p>
+                        <p class="text-gray-600"><strong class="text-gray-800">Solution:</strong> ${item.solution}</p>
+                        <div class="mt-4 pt-4 border-t border-gray-200">
+                           <p class="font-semibold text-gray-800">Key Impact:</p>
+                           <p class="text-green-600 font-bold">${item.impact}</p>
+                        </div>
+                    `;
+                    container.appendChild(card);
+                });
+            }
+
+            function initValueChain() {
+                const tabs = document.getElementById('value-chain-tabs');
+                tabs.addEventListener('click', e => {
+                    if (e.target.tagName === 'BUTTON') {
+                        tabs.querySelector('.active').classList.remove('active');
+                        e.target.classList.add('active');
+                        renderValueChainCards(e.target.dataset.filter);
+                    }
+                });
+                renderValueChainCards();
+            }
+            
+            function initMaturityModel() {
+                const grid = document.getElementById('maturity-grid');
+                const details = document.getElementById('maturity-details');
+                Object.keys(maturityData).forEach(key => {
+                    const rowLabel = document.createElement('div');
+                    rowLabel.className = 'font-bold p-2 text-right';
+                    rowLabel.textContent = key;
+                    grid.appendChild(rowLabel);
+                    maturityData[key].forEach((text, index) => {
+                        const cell = document.createElement('div');
+                        cell.className = 'maturity-cell border border-gray-200 p-2 flex items-center justify-center cursor-pointer hover:bg-gray-100 transition';
+                        cell.dataset.stage = `Stage ${index+1}`;
+                        cell.dataset.dimension = key;
+                        cell.dataset.text = text;
+                        cell.innerHTML = `<span>&#10003;</span>`;
+                        grid.appendChild(cell);
+                    });
+                });
+
+                grid.addEventListener('click', e => {
+                    const cell = e.target.closest('.maturity-cell');
+                    if(cell) {
+                        const currentActive = grid.querySelector('.active');
+                        if(currentActive) currentActive.classList.remove('active');
+                        cell.classList.add('active');
+                        details.innerHTML = `
+                             <h4 class="font-bold text-gray-800">${cell.dataset.dimension} at ${cell.dataset.stage}</h4>
+                             <p class="text-gray-600 mt-1">${cell.dataset.text}</p>`;
+                    }
+                });
+            }
+
+            function initRoadmap() {
+                const container = document.getElementById('roadmap-steps');
+                roadmapData.forEach((step, index) => {
+                    const el = document.createElement('div');
+                    el.className = 'roadmap-step border-2 border-gray-200 p-4 rounded-lg cursor-pointer';
+                    el.innerHTML = `
+                        <div class="flex justify-between items-center">
+                            <h4 class="font-semibold text-lg">${index + 1}. ${step.title}</h4>
+                            <span class="text-blue-500 transform transition-transform">&#9662;</span>
+                        </div>
+                        <p class="text-gray-600 mt-2 hidden">${step.detail}</p>
+                    `;
+                    container.appendChild(el);
+                });
+
+                container.addEventListener('click', e => {
+                    const step = e.target.closest('.roadmap-step');
+                    if (step) {
+                        const currentActive = container.querySelector('.active');
+                        if (currentActive && currentActive !== step) {
+                            currentActive.classList.remove('active');
+                            currentActive.querySelector('p').classList.add('hidden');
+                            currentActive.querySelector('span').classList.remove('rotate-180');
+                        }
+                        step.classList.toggle('active');
+                        step.querySelector('p').classList.toggle('hidden');
+                        step.querySelector('span').classList.toggle('rotate-180');
+                    }
+                });
+            }
+
+            function initROI() {
+                const costsInput = document.getElementById('costs');
+                const benefitsInput = document.getElementById('benefits');
+                const calculateBtn = document.getElementById('calculate-roi');
+                const roiResult = document.getElementById('roi-result');
+                const paybackResult = document.getElementById('payback-result');
+                let benefitsChart;
+
+                function calculate() {
+                    const costs = parseFloat(costsInput.value) || 0;
+                    const benefits = parseFloat(benefitsInput.value) || 0;
+                    if(costs > 0) {
+                        const roi = ((benefits - costs) / costs) * 100;
+                        const payback = costs / benefits;
+                        roiResult.textContent = `${roi.toFixed(1)}%`;
+                        paybackResult.textContent = `${payback.toFixed(1)} Years`;
+                    } else {
+                        roiResult.textContent = 'N/A';
+                        paybackResult.textContent = 'N/A';
+                    }
+                    updateChart(costs, benefits);
+                }
+
+                function updateChart(costs, benefits) {
+                     const data = {
+                        labels: ['Tangible Benefits', 'Intangible / Strategic Value'],
+                        datasets: [{
+                            label: 'Value Components',
+                            data: [benefits, benefits * 0.5], // Assume 50% strategic value for visual
+                            backgroundColor: ['#2563EB', '#93C5FD'],
+                            borderColor: '#ffffff',
+                            borderWidth: 2
+                        }]
+                    };
+
+                    if(benefitsChart) {
+                        benefitsChart.destroy();
+                    }
+
+                    benefitsChart = new Chart(document.getElementById('benefits-chart'), {
+                        type: 'doughnut',
+                        data: data,
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: { position: 'top', },
+                                title: { display: true, text: 'Components of Total Value' }
+                            }
+                        }
+                    });
+                }
+                
+                calculateBtn.addEventListener('click', calculate);
+                costsInput.addEventListener('input', calculate);
+                benefitsInput.addEventListener('input', calculate);
+                calculate();
+            }
+
+            function initRiskMatrix() {
+                const grid = document.getElementById('risk-matrix-grid');
+                const tooltip = document.getElementById('risk-tooltip');
+
+                const colors = [
+                    ['bg-green-200', 'bg-yellow-200', 'bg-yellow-300', 'bg-red-300'],
+                    ['bg-green-300', 'bg-yellow-300', 'bg-red-300', 'bg-red-400'],
+                    ['bg-yellow-300', 'bg-red-300', 'bg-red-400', 'bg-red-500'],
+                    ['bg-red-300', 'bg-red-400', 'bg-red-500', 'bg-red-600']
+                ];
+                
+                for(let r=3; r>=0; r--) {
+                    for(let c=0; c<4; c++) {
+                        const cell = document.createElement('div');
+                        cell.className = `${colors[r][c]} border border-gray-300 rounded-sm relative`;
+                        cell.dataset.row = r;
+                        cell.dataset.col = c;
+                        grid.appendChild(cell);
+                    }
+                }
+
+                riskData.forEach(risk => {
+                    const row = risk.impact;
+                    const col = risk.likelihood;
+                    const cell = grid.querySelector(`[data-row="${row}"][data-col="${col}"]`);
+                    if (cell) {
+                        const dot = document.createElement('div');
+                        dot.className = 'absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-3 h-3 bg-gray-800 rounded-full ring-2 ring-white cursor-pointer';
+                        dot.dataset.riskName = risk.name;
+                        dot.dataset.riskMitigation = risk.mitigation;
+                        cell.appendChild(dot);
+                    }
+                });
+
+                grid.addEventListener('mouseover', e => {
+                    if (e.target.dataset.riskName) {
+                        const riskName = e.target.dataset.riskName;
+                        const riskMitigation = e.target.dataset.riskMitigation;
+                        tooltip.innerHTML = `<h5 class="font-bold mb-1">${riskName}</h5><p>${riskMitigation}</p>`;
+                        
+                        const rect = e.target.getBoundingClientRect();
+                        const containerRect = grid.parentElement.getBoundingClientRect();
+
+                        tooltip.style.left = `${rect.left - containerRect.left + rect.width / 2}px`;
+                        tooltip.style.top = `${rect.top - containerRect.top - tooltip.offsetHeight - 10}px`;
+                        tooltip.style.transform = 'translateX(-50%)';
+                        
+                        tooltip.classList.remove('hidden');
+                    }
+                });
+                grid.addEventListener('mouseout', e => {
+                    if (e.target.dataset.riskName) {
+                        tooltip.classList.add('hidden');
+                    }
+                });
+            }
+
+            function initNavScroll() {
+                const navLinks = document.querySelectorAll('.nav-link');
+                const sections = document.querySelectorAll('section');
+
+                window.addEventListener('scroll', () => {
+                    let current = '';
+                    sections.forEach(section => {
+                        const sectionTop = section.offsetTop;
+                        if (pageYOffset >= sectionTop - 100) {
+                            current = section.getAttribute('id');
+                        }
+                    });
+
+                    navLinks.forEach(link => {
+                        link.classList.remove('active');
+                        if (link.getAttribute('href') === `#${current}`) {
+                            link.classList.add('active');
+                        }
+                    });
+                });
+                
+                navLinks.forEach(link => {
+                    link.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        document.querySelector(this.getAttribute('href')).scrollIntoView({
+                            behavior: 'smooth'
+                        });
+                    });
+                });
+            }
+
+            animateStatCounters();
+            initAIHierarchy();
+            initValueChain();
+            initMaturityModel();
+            initRoadmap();
+            initROI();
+            initRiskMatrix();
+            initNavScroll();
+
+        });
+    </script>
+
+</body>
+</html>
